@@ -22,7 +22,9 @@ type AlwaysNewFileWriter struct {
 // Write implements io.Writer
 func (w *AlwaysNewFileWriter) Write(p []byte) (n int, err error) {
 	if w.file == nil {
-		w.openFile()
+		if err = w.openFile(); err != nil {
+			return
+		}
 	}
 
 	return w.file.Write(p)

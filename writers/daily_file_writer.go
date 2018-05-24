@@ -25,10 +25,14 @@ func (w *DailyFileWriter) Write(p []byte) (n int, err error) {
 	now := time.Now()
 
 	if w.file == nil {
-		w.openFile(&now)
+		if err = w.openFile(&now); err != nil {
+			return
+		}
 	} else if now.Unix() >= w.nextDayTime {
 		w.file.Close()
-		w.openFile(&now)
+		if err = w.openFile(&now); err != nil {
+			return
+		}
 	}
 
 	return w.file.Write(p)

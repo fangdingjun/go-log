@@ -9,7 +9,7 @@ package main
 
     import (
     	"os"
-    	"github.com/subchen/go-log"
+    	"github.com/fangdingjun/go-log"
     )
 
     func main() {
@@ -21,7 +21,7 @@ package main
 Output:
 
     07:34:23.039 INFO some message
-    07:34:23.039 INFO $HOME = /home/subchen
+    07:34:23.039 INFO $HOME = /home/fangdingjun
     07:34:23.039 ERROR Got err: permission denied
 
 
@@ -31,9 +31,9 @@ You also can config `log.Default` or new `log.Logger` to customize formatter and
 
     import (
     	"os"
-    	"github.com/subchen/go-log"
-    	"github.com/subchen/go-log/formatters"
-    	"github.com/subchen/go-log/writers"
+    	"github.com/fangdingjun/go-log"
+    	"github.com/fangdingjun/go-log/formatters"
+    	"github.com/fangdingjun/go-log/writers"
     )
 
     func main() {
@@ -57,7 +57,7 @@ Output log in `/tmp/test.log`:
     2018-05-19T07:49:05.979+0000 INFO devbox main 9981 example/main.go:17 some message
 
 
-For a full guide visit https://github.com/subchen/go-log
+For a full guide visit https://github.com/fangdingjun/go-log
 
 */
 package log

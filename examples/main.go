@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/subchen/go-log"
-	"github.com/subchen/go-log/formatters"
+	"github.com/fangdingjun/go-log"
+	"github.com/fangdingjun/go-log/formatters"
 )
 
 func main() {

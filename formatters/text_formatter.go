@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/subchen/go-log"
+	"github.com/fangdingjun/go-log"
 )
 
 var (
@@ -83,7 +83,7 @@ func (f *TextFormatter) Format(level log.Level, msg string, logger *log.Logger) 
 	buf.Write(f.pid)
 
 	// file, line
-	file, line := FilelineCaller(5)
+	file, line := FilelineCaller(4)
 	buf.WriteByte(' ')
 	buf.WriteString(file)
 	buf.WriteByte(':')

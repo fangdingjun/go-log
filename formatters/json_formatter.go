@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/subchen/go-log"
+	"github.com/fangdingjun/go-log"
 )
 
 // JSONFormatter is a json formatter
@@ -41,7 +41,7 @@ func (f *JSONFormatter) Format(level log.Level, msg string, logger *log.Logger) 
 	data := make(map[string]interface{}, 8)
 
 	// file, line
-	file, line := FilelineCaller(5)
+	file, line := FilelineCaller(4)
 
 	data["time"] = time.Now().Format(f.TimeFormat)
 	data["level"] = level.String()

@@ -13,6 +13,11 @@ func FilelineCaller(skip int) (file string, line int) {
 			return "???", 0
 		}
 
+		//fmt.Printf("%s:%d\n", file, line)
+		if strings.Contains(file, "go-log/") {
+			continue
+		}
+
 		// file = pkg/file.go
 		n := 0
 		for i := len(file) - 1; i > 0; i-- {
@@ -24,10 +29,7 @@ func FilelineCaller(skip int) (file string, line int) {
 				}
 			}
 		}
-
-		if !strings.HasPrefix(file, "go-log/") {
-			return file, line
-		}
+		return file, line
 	}
 
 	return "???", 0

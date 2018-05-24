@@ -62,6 +62,28 @@ func (f *TextFormatter) Format(level log.Level, msg string, logger *log.Logger) 
 	timeStr := time.Now().Format(f.TimeFormat)
 	buf.WriteString(timeStr)
 
+	/*
+		// host
+		buf.WriteByte(' ')
+		buf.Write(f.host)
+
+		// name
+		buf.WriteByte(' ')
+		buf.Write(f.app)
+
+		// pid
+		buf.WriteByte(' ')
+		buf.Write(f.pid)
+	*/
+
+	// file, line
+	file, line := FilelineCaller(4)
+	buf.WriteString(" [")
+	buf.WriteString(file)
+	buf.WriteByte(':')
+	buf.WriteString(strconv.Itoa(line))
+	buf.WriteString("]")
+
 	// level
 	buf.WriteByte(' ')
 	if f.isterm {
@@ -69,32 +91,14 @@ func (f *TextFormatter) Format(level log.Level, msg string, logger *log.Logger) 
 	} else {
 		buf.WriteString(level.String())
 	}
-
-	// host
-	buf.WriteByte(' ')
-	buf.Write(f.host)
-
-	// name
-	buf.WriteByte(' ')
-	buf.Write(f.app)
-
-	// pid
-	buf.WriteByte(' ')
-	buf.Write(f.pid)
-
-	// file, line
-	file, line := FilelineCaller(4)
-	buf.WriteByte(' ')
-	buf.WriteString(file)
-	buf.WriteByte(':')
-	buf.WriteString(strconv.Itoa(line))
-
 	// msg
-	buf.WriteByte(' ')
+	buf.WriteString(": ")
 	buf.WriteString(msg)
 
 	// newline
-	buf.WriteByte('\n')
+	if msg[len(msg)-1] != '\n' {
+		buf.WriteByte('\n')
+	}
 
 	return buf.Bytes()
 }

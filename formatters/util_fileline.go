@@ -1,6 +1,7 @@
 package formatters
 
 import (
+	"path"
 	"runtime"
 	"strings"
 )
@@ -17,19 +18,20 @@ func FilelineCaller(skip int) (file string, line int) {
 		if strings.Contains(file, "go-log/") {
 			continue
 		}
-
-		// file = pkg/file.go
-		n := 0
-		for i := len(file) - 1; i > 0; i-- {
-			if file[i] == '/' {
-				n++
-				if n >= 2 {
-					file = file[i+1:]
-					break
+		/*
+			// file = pkg/file.go
+			n := 0
+			for i := len(file) - 1; i > 0; i-- {
+				if file[i] == '/' {
+					n++
+					if n >= 2 {
+						file = file[i+1:]
+						break
+					}
 				}
 			}
-		}
-		return file, line
+		*/
+		return path.Base(file), line
 	}
 
 	return "???", 0

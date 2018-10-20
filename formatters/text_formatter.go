@@ -11,6 +11,7 @@ import (
 	"github.com/fangdingjun/go-log"
 )
 
+/*
 var (
 	fmtBuffer = sync.Pool{
 		New: func() interface{} {
@@ -18,6 +19,7 @@ var (
 		},
 	}
 )
+*/
 
 // TextFormatter is a text line formatter
 type TextFormatter struct {
@@ -54,9 +56,10 @@ func (f *TextFormatter) Format(level log.Level, msg string, logger *log.Logger) 
 		f.pid = []byte(strconv.Itoa(os.Getpid()))
 	})
 
-	buf := fmtBuffer.Get().(*bytes.Buffer)
-	buf.Reset()
-	defer fmtBuffer.Put(buf)
+	//buf := fmtBuffer.Get().(*bytes.Buffer)
+	//buf.Reset()
+	//defer fmtBuffer.Put(buf)
+	buf := new(bytes.Buffer)
 
 	// timestamp
 	timeStr := time.Now().Format(f.TimeFormat)

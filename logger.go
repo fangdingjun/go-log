@@ -21,9 +21,11 @@ type Logger struct {
 // New creates a new Logger
 func New() *Logger {
 	return &Logger{
-		Level:     INFO,
-		Formatter: new(simpleFormatter),
-		Out:       os.Stdout,
+		Level: INFO,
+		Formatter: &TextFormatter{
+			TimeFormat: "2006-01-02 15:04:05.000",
+		},
+		Out: os.Stdout,
 	}
 }
 

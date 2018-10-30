@@ -1,5 +1,5 @@
 /*
-Package log is a simple and configurable Logging in Go, with level, formatters and writers.
+Package log is a simple and configurable Logging in Go, with level, log and log.
 
 It is completely API compatible with the standard library logger.
 
@@ -32,15 +32,13 @@ You also can config `log.Default` or new `log.Logger` to customize formatter and
     import (
     	"os"
     	"github.com/fangdingjun/go-log"
-    	"github.com/fangdingjun/go-log/formatters"
-    	"github.com/fangdingjun/go-log/writers"
     )
 
     func main() {
     	logger := &log.Logger{
     		Level:     log.INFO,
-    		Formatter: new(formatters.TextFormatter),
-    		Out:       &writers.FixedSizeFileWriter{
+    		Formatter: new(log.TextFormatter),
+    		Out:       &log.FixedSizeFileWriter{
     			Name:     "/tmp/test.log",
     			MaxSize:  10 * 1024 * 1024, // 10m
     			MaxCount: 10,

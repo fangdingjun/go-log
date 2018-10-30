@@ -1,11 +1,12 @@
 go-log
 ================
-
-[![GoDoc](https://godoc.org/github.com/subchen/go-log?status.svg)](https://godoc.org/github.com/subchen/go-log)
-[![Build Status](https://travis-ci.org/subchen/go-log.svg?branch=master)](https://travis-ci.org/subchen/go-log)
-[![Coverage Status](https://coveralls.io/repos/github/subchen/go-log/badge.svg?branch=master)](https://coveralls.io/github/subchen/go-log?branch=master)
-[![Go Report Card](https://goreportcard.com/badge/github.com/subchen/go-log)](https://goreportcard.com/report/github.com/subchen/go-log)
+<!--
+[![GoDoc](https://godoc.org/github.com/fangdingjun/go-log?status.svg)](https://godoc.org/github.com/fangdingjun/go-log)
+[![Build Status](https://travis-ci.org/fangdingjun/go-log.svg?branch=master)](https://travis-ci.org/fangdingjun/go-log)
+[![Coverage Status](https://coveralls.io/repos/github/fangdingjun/go-log/badge.svg?branch=master)](https://coveralls.io/github/fangdingjun/go-log?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fangdingjun/go-log)](https://goreportcard.com/report/github.com/fangdingjun/go-log)
 [![License](http://img.shields.io/badge/License-Apache_2-red.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
+-->
 
 Logging package similar to log4j for the Golang.
 
@@ -13,7 +14,7 @@ Logging package similar to log4j for the Golang.
 - Support customized formatter
   - TextFormatter
   - JSONFormatter
-- Support multiple rolling file writers
+- Support multiple rolling file log
   - FixedSizeFileWriter
   - DailyFileWriter
   - AlwaysNewFileWriter
@@ -22,7 +23,7 @@ Installation
 ---------------
 
 ```bash
-$ go get github.com/subchen/go-log
+$ go get github.com/fangdingjun/go-log
 ```
 
 Usage
@@ -34,7 +35,7 @@ package main
 import (
 	"os"
 	"errors"
-	"github.com/subchen/go-log"
+	"github.com/fangdingjun/go-log"
 )
 
 func main() {
@@ -55,23 +56,23 @@ Default log to console, you can set `Logger.Out` to set a file writer into log.
 
 ```go
 import (
-	"github.com/subchen/go-log"
-	"github.com/subchen/go-log/writers"
+	"github.com/fangdingjun/go-log"
+	"github.com/fangdingjun/go-log/log"
 )
 
-log.Default.Out = &writers.FixedSizeFileWriter{
+log.Default.Out = &log.FixedSizeFileWriter{
 	Name:	 "/tmp/test.log",
 	MaxSize:  10 * 1024 * 1024, // 10m
 	MaxCount: 10,
 })
 ```
 
-Three builtin writers for use
+Three builtin log for use
 
 ```go
 // Create log file if file size large than fixed size (10m)
 // files: /tmp/test.log.0 .. test.log.10
-&writers.FixedSizeFileWriter{
+&log.FixedSizeFileWriter{
 	Name:	 "/tmp/test.log",
 	MaxSize:  10 * 1024 * 1024, // 10m
 	MaxCount: 10,
@@ -79,14 +80,14 @@ Three builtin writers for use
 
 // Create log file every day.
 // files: /tmp/test.log.20160102
-&writers.DailyFileWriter{
+&log.DailyFileWriter{
 	Name: "/tmp/test.log",
 	MaxCount: 10,
 }
 
 // Create log file every process.
 // files: /tmp/test.log.20160102_150405
-&writers.AlwaysNewFileWriter{
+&log.AlwaysNewFileWriter{
 	Name: "/tmp/test.log",
 	MaxCount: 10,
 }
@@ -94,7 +95,7 @@ Three builtin writers for use
 // Output to multiple writes
 io.MultiWriter(
 	os.Stdout,
-	&writers.DailyFileWriter{
+	&log.DailyFileWriter{
 		Name: "/tmp/test.log",
 		MaxCount: 10,
 	}
@@ -106,11 +107,10 @@ io.MultiWriter(
 
 ```go
 import (
-	"github.com/subchen/go-log"
-	"github.com/subchen/go-log/formatters"
+	"github.com/fangdingjun/go-log"
 )
 
-log.Default.Formatter = new(formatters.TextFormatter)
+log.Default.Formatter = new(log.TextFormatter)
 ```
 
 
@@ -118,13 +118,13 @@ log.Default.Formatter = new(formatters.TextFormatter)
 
 ```go
 import (
-	"github.com/subchen/go-log"
+	"github.com/fangdingjun/go-log"
 )
 
 func main() {
 	logger := &log.Logger{
 		Level:     log.INFO,
-		Formatter: new(formatters.JSONFormatter),
+		Formatter: new(log.JSONFormatter),
 		Out:       os.Stdout,
 	}
 

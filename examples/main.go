@@ -4,20 +4,19 @@ import (
 	"os"
 
 	"github.com/fangdingjun/go-log"
-	"github.com/fangdingjun/go-log/formatters"
 )
 
 func main() {
 	log.Info("hello", 123)
 	log.Warn("hello", 123)
 
-	log.Default.Formatter = new(formatters.TextFormatter)
+	log.Default.Formatter = new(log.TextFormatter)
 	log.Infoln("hello", "world")
 	log.Warnln("hello", "world")
 
 	newLog := &log.Logger{
 		Level:     log.INFO,
-		Formatter: new(formatters.JSONFormatter),
+		Formatter: new(log.JSONFormatter),
 		Out:       os.Stdout,
 	}
 	newLog.Infof("hello %v", 123)

@@ -2,8 +2,8 @@ package log
 
 // Won't compile if LogInterface can't be realized by a log.Logger
 var (
-	_ StdLog       = Default
-	_ LogInterface = Default
+	_ StdLog    = Default
+	_ Interface = Default
 )
 
 // StdLog is interface for builtin log
@@ -21,8 +21,8 @@ type StdLog interface {
 	Panicln(...interface{})
 }
 
-// LogInterface is interface for this logger
-type LogInterface interface {
+// Interface is interface for this logger
+type Interface interface {
 	Debug(...interface{})
 	Info(...interface{})
 	Print(...interface{})

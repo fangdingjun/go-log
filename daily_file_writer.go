@@ -1,4 +1,4 @@
-package writers
+package log
 
 import (
 	"fmt"
@@ -11,18 +11,26 @@ import (
 	"time"
 )
 
-// AlwaysNewFileWriter create new log for every process
-type AlwaysNewFileWriter struct {
+// DailyFileWriter create new log for every day
+type DailyFileWriter struct {
 	Name     string
 	MaxCount int
 
-	file *os.File
+	file        *os.File
+	nextDayTime int64
 }
 
 // Write implements io.Writer
-func (w *AlwaysNewFileWriter) Write(p []byte) (n int, err error) {
+func (w *DailyFileWriter) Write(p []byte) (n int, err error) {
+	now := time.Now()
+
 	if w.file == nil {
-		if err = w.openFile(); err != nil {
+		if err = w.openFile(&now); err != nil {
+			return
+		}
+	} else if now.Unix() >= w.nextDayTime {
+		w.file.Close()
+		if err = w.openFile(&now); err != nil {
 			return
 		}
 	}
@@ -30,8 +38,8 @@ func (w *AlwaysNewFileWriter) Write(p []byte) (n int, err error) {
 	return w.file.Write(p)
 }
 
-func (w *AlwaysNewFileWriter) openFile() (err error) {
-	name := fmt.Sprintf("%s.%s", w.Name, time.Now().Format("20060102_150405"))
+func (w *DailyFileWriter) openFile(now *time.Time) (err error) {
+	name := fmt.Sprintf("%s.%s", w.Name, now.Format("20060102"))
 
 	// remove symbol link if exist
 	os.Remove(w.Name)
@@ -42,10 +50,13 @@ func (w *AlwaysNewFileWriter) openFile() (err error) {
 		return err
 	}
 
-	w.file, err = os.OpenFile(name, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0644)
+	w.file, err = os.OpenFile(name, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		return err
 	}
+
+	year, month, day := now.Date()
+	w.nextDayTime = time.Date(year, month, day+1, 0, 0, 0, 0, now.Location()).Unix()
 
 	if w.MaxCount > 0 {
 		go w.cleanFiles()
@@ -55,7 +66,7 @@ func (w *AlwaysNewFileWriter) openFile() (err error) {
 }
 
 // clean old files
-func (w *AlwaysNewFileWriter) cleanFiles() {
+func (w *DailyFileWriter) cleanFiles() {
 	dir := path.Dir(w.Name)
 
 	fileList, err := ioutil.ReadDir(dir)
@@ -74,7 +85,6 @@ func (w *AlwaysNewFileWriter) cleanFiles() {
 
 	if len(matches) > w.MaxCount {
 		sort.Sort(sort.Reverse(sort.StringSlice(matches)))
-		fmt.Println(matches)
 
 		for _, f := range matches[w.MaxCount:] {
 			file := filepath.Join(dir, f)

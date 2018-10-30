@@ -1,4 +1,4 @@
-package formatters
+package log
 
 import (
 	"bytes"
@@ -8,8 +8,6 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
-
-	"github.com/fangdingjun/go-log"
 )
 
 // JSONFormatter is a json formatter
@@ -23,7 +21,7 @@ type JSONFormatter struct {
 }
 
 // Format implements log.Formatter
-func (f *JSONFormatter) Format(level log.Level, msg string, logger *log.Logger) []byte {
+func (f *JSONFormatter) Format(level Level, msg string, logger *Logger) []byte {
 	// output fields: time level host app pid file line msg
 
 	f.init.Do(func() {

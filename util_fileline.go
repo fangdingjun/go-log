@@ -14,23 +14,11 @@ func FilelineCaller(skip int) (file string, line int) {
 			return "???", 0
 		}
 
-		//fmt.Printf("%s:%d\n", file, line)
-		if strings.Contains(file, "go-log/") {
+		// in go module mode, the import path like this
+		//     github.com/fangdingjun/go-log@v4.0.1-incomple/
+		if strings.Contains(file, "go-log/") || strings.Contains(file, "go-log@v") {
 			continue
 		}
-		/*
-			// file = pkg/file.go
-			n := 0
-			for i := len(file) - 1; i > 0; i-- {
-				if file[i] == '/' {
-					n++
-					if n >= 2 {
-						file = file[i+1:]
-						break
-					}
-				}
-			}
-		*/
 		return path.Base(file), line
 	}
 

@@ -35,7 +35,7 @@ package main
 import (
 	"os"
 	"errors"
-	"github.com/fangdingjun/go-log"
+	log "github.com/fangdingjun/go-log/v5"
 )
 
 func main() {
@@ -56,8 +56,7 @@ Default log to console, you can set `Logger.Out` to set a file writer into log.
 
 ```go
 import (
-	"github.com/fangdingjun/go-log"
-	"github.com/fangdingjun/go-log/log"
+	log "github.com/fangdingjun/go-log/v5"
 )
 
 log.Default.Out = &log.FixedSizeFileWriter{
@@ -107,7 +106,7 @@ io.MultiWriter(
 
 ```go
 import (
-	"github.com/fangdingjun/go-log"
+	log "github.com/fangdingjun/go-log/v5"
 )
 
 log.Default.Formatter = new(log.TextFormatter)
@@ -118,7 +117,7 @@ log.Default.Formatter = new(log.TextFormatter)
 
 ```go
 import (
-	"github.com/fangdingjun/go-log"
+	log "github.com/fangdingjun/go-log/v5"
 )
 
 func main() {

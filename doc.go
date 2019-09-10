@@ -9,7 +9,7 @@ package main
 
     import (
     	"os"
-    	"github.com/fangdingjun/go-log"
+    	log "github.com/fangdingjun/go-log/v5"
     )
 
     func main() {
@@ -31,7 +31,7 @@ You also can config `log.Default` or new `log.Logger` to customize formatter and
 
     import (
     	"os"
-    	"github.com/fangdingjun/go-log"
+    	log "github.com/fangdingjun/go-log/v5"
     )
 
     func main() {

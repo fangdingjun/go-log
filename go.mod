@@ -1,4 +1,4 @@
-module github.com/fangdingjun/go-log
+module github.com/fangdingjun/go-log/v5
 
 go 1.13
 

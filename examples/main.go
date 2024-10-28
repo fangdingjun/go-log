@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	log "github.com/fangdingjun/go-log/v5"
+	log "github.com/fangdingjun/go-log"
 )
 
 func main() {

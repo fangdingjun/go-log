@@ -2,7 +2,6 @@ package log
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -69,7 +68,7 @@ func (w *DailyFileWriter) openFile(now *time.Time) (err error) {
 func (w *DailyFileWriter) cleanFiles() {
 	dir := path.Dir(w.Name)
 
-	fileList, err := ioutil.ReadDir(dir)
+	fileList, err := os.ReadDir(dir)
 	if err != nil {
 		return
 	}

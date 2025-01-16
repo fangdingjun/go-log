@@ -4,7 +4,7 @@ import (
 	"io"
 	"os"
 
-	"golang.org/x/crypto/ssh/terminal"
+	terminal "golang.org/x/term"
 )
 
 // IsTerminal returns whether is a valid tty for io.Writer

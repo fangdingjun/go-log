@@ -1,149 +1,138 @@
+/*
+Package log is a log/slog wrapper
+*/
 package log
 
+import (
+	"context"
+	"fmt"
+	"io"
+	"log/slog"
+	"os"
+	"runtime"
+	"strings"
+	"time"
+)
+
 // Default is a default Logger instance
-var Default = New()
+var Default *Logger
 
-// IsDebugEnabled indicates whether output message
-func IsDebugEnabled() bool {
-	return Default.IsDebugEnabled()
+type Logger struct {
+	logger *slog.Logger
 }
 
-// IsInfoEnabled indicates whether output message
-func IsInfoEnabled() bool {
-	return Default.IsInfoEnabled()
+func New() *Logger {
+	h := NewSlogHandler(os.Stdout, &slog.HandlerOptions{AddSource: true, Level: slog.LevelDebug})
+	l := slog.New(h)
+	return &Logger{
+		logger: l,
+	}
 }
 
-// IsPrintEnabled indicates whether output message
-func IsPrintEnabled() bool {
-	return Default.IsPrintEnabled()
+func (l *Logger) log(lvl slog.Level, fmts string, args ...interface{}) {
+	h := l.logger.Handler()
+	if !h.Enabled(context.Background(), lvl) {
+		return
+	}
+	a := fmt.Sprintf(fmts, args...)
+	pc := [1]uintptr{}
+	runtime.Callers(3, pc[:])
+	r := slog.NewRecord(time.Now(), lvl, a, pc[0])
+	h.Handle(context.Background(), r)
 }
 
-// IsWarnEnabled indicates whether output message
-func IsWarnEnabled() bool {
-	return Default.IsWarnEnabled()
+func (l *Logger) Debugf(msg string, args ...interface{}) {
+	l.log(slog.LevelDebug, msg, args...)
 }
 
-// IsErrorEnabled indicates whether output message
-func IsErrorEnabled() bool {
-	return Default.IsErrorEnabled()
+func (l *Logger) Infof(msg string, args ...interface{}) {
+	l.log(slog.LevelInfo, msg, args...)
 }
 
-// IsPanicEnabled indicates whether output message
-func IsPanicEnabled() bool {
-	return Default.IsPanicEnabled()
+func (l *Logger) Warnf(msg string, args ...interface{}) {
+	l.log(slog.LevelWarn, msg, args...)
 }
 
-// IsFatalEnabled indicates whether output message
-func IsFatalEnabled() bool {
-	return Default.IsFatalEnabled()
+func (l *Logger) Errorf(msg string, args ...interface{}) {
+	l.log(slog.LevelError, msg, args...)
 }
 
-// IsDisabled indicates whether output message
-func IsDisabled() bool {
-	return Default.IsDisabled()
+func (l *Logger) SetOutput(w io.Writer) {
+	h := l.logger.Handler()
+	h1 := h.(*slogHandler)
+	h1.mu.Lock()
+	defer h1.mu.Unlock()
+	h1.w = w
 }
 
-// Debug outputs message, Arguments are handled by fmt.Sprint
-func Debug(obj ...interface{}) {
-	Default.Debug(obj...)
+func (l *Logger) SetLevel(level slog.Level) {
+	h := l.logger.Handler()
+	h1 := h.(*slogHandler)
+	h1.mu.Lock()
+	defer h1.mu.Unlock()
+	h1.opts.Level = level
+
 }
 
-// Info outputs message, Arguments are handled by fmt.Sprint
-func Info(obj ...interface{}) {
-	Default.Info(obj...)
-}
-
-// Print outputs message, Arguments are handled by fmt.Sprint
-func Print(obj ...interface{}) {
-	Default.Print(obj...)
-}
-
-// Warn outputs message, Arguments are handled by fmt.Sprint
-func Warn(obj ...interface{}) {
-	Default.Warn(obj...)
-}
-
-// Error outputs message, Arguments are handled by fmt.Sprint
-func Error(obj ...interface{}) {
-	Default.Error(obj...)
-}
-
-// Panic outputs message, and followed by a call to panic() Arguments are handled by fmt.Sprint
-func Panic(obj ...interface{}) {
-	Default.Panic(obj...)
-}
-
-// Fatal outputs message, and followed by a call to os.Exit(1) Arguments are handled by fmt.Sprint
-func Fatal(obj ...interface{}) {
-	Default.Fatal(obj...)
-}
-
-// Debugln outputs message, Arguments are handled by fmt.Sprintln
-func Debugln(obj ...interface{}) {
-	Default.Debugln(obj...)
-}
-
-// Infoln outputs message, Arguments are handled by fmt.Sprintln
-func Infoln(obj ...interface{}) {
-	Default.Infoln(obj...)
-}
-
-// Println outputs message, Arguments are handled by fmt.Sprintln
-func Println(obj ...interface{}) {
-	Default.Println(obj...)
-}
-
-// Warnln outputs message, Arguments are handled by fmt.Sprintln
-func Warnln(obj ...interface{}) {
-	Default.Warnln(obj...)
-}
-
-// Errorln outputs message, Arguments are handled by fmt.Sprintln
-func Errorln(obj ...interface{}) {
-	Default.Errorln(obj...)
-}
-
-// Panicln outputs message and followed by a call to panic(), Arguments are handled by fmt.Sprintln
-func Panicln(obj ...interface{}) {
-	Default.Panicln(obj...)
-}
-
-// Fatalln outputs message and followed by a call to os.Exit(1), Arguments are handled by fmt.Sprintln
-func Fatalln(obj ...interface{}) {
-	Default.Fatalln(obj...)
+func (l *Logger) SetOutputFile(fn string) {
+	out := &FixedSizeFileWriter{
+		Name:     fn,
+		MaxSize:  100 * 1024 * 1024,
+		MaxCount: 10,
+	}
+	SetOutput(out)
 }
 
 // Debugf outputs message, Arguments are handled by fmt.Sprintf
 func Debugf(msg string, args ...interface{}) {
-	Default.Debugf(msg, args...)
+	Default.log(slog.LevelDebug, msg, args...)
 }
 
 // Infof outputs message, Arguments are handled by fmt.Sprintf
 func Infof(msg string, args ...interface{}) {
-	Default.Infof(msg, args...)
-}
-
-// Printf outputs message, Arguments are handled by fmt.Sprintf
-func Printf(msg string, args ...interface{}) {
-	Default.Printf(msg, args...)
+	Default.log(slog.LevelInfo, msg, args...)
 }
 
 // Warnf outputs message, Arguments are handled by fmt.Sprintf
 func Warnf(msg string, args ...interface{}) {
-	Default.Warnf(msg, args...)
+	Default.log(slog.LevelWarn, msg, args...)
 }
 
 // Errorf outputs message, Arguments are handled by fmt.Sprintf
 func Errorf(msg string, args ...interface{}) {
-	Default.Errorf(msg, args...)
+	Default.log(slog.LevelError, msg, args...)
 }
 
-// Panicf outputs message and followed by a call to panic(), Arguments are handled by fmt.Sprintf
-func Panicf(msg string, args ...interface{}) {
-	Default.Panicf(msg, args...)
+func Errorln(msg ...interface{}) {
+	fmts := []string{}
+	for i := 0; i < len(msg); i++ {
+		fmts = append(fmts, "%+v")
+	}
+	Default.log(slog.LevelError, strings.Join(fmts, " "), msg)
 }
 
-// Fatalf outputs message and followed by a call to os.Exit(1), Arguments are handled by fmt.Sprintf
-func Fatalf(msg string, args ...interface{}) {
-	Default.Fatalf(msg, args...)
+func Fatal(msg ...interface{}) {
+	fmts := []string{}
+	for i := 0; i < len(msg); i++ {
+		fmts = append(fmts, "%+v")
+	}
+	Default.log(slog.LevelError, strings.Join(fmts, " "), msg)
+	os.Exit(1)
+}
+
+func SetOutput(w io.Writer) {
+	Default.SetOutput(w)
+}
+
+func SetLevel(level slog.Level) {
+	Default.SetLevel(level)
+}
+
+func SetOutputFile(fn string) {
+	Default.SetOutputFile(fn)
+}
+
+func init() {
+	Default = New()
+	//setLogDefault("")
 }
